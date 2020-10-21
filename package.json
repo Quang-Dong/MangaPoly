@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "cn": "adb reverse tcp:8081 tcp:8081",
+    "android": "npx react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start",
+    "start": "npx react-native start",
     "test": "jest",
     "lint": "eslint ."
   },
@@ -24,7 +25,10 @@
     "react-native-safe-area-context": "^3.1.8",
     "react-native-screens": "^2.11.0",
     "react-native-tab-view": "^2.15.2",
-    "react-native-vector-icons": "^7.1.0"
+    "react-native-vector-icons": "^7.1.0",
+    "react-redux": "^7.2.1",
+    "redux": "^4.0.5",
+    "redux-saga": "^1.1.3"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
