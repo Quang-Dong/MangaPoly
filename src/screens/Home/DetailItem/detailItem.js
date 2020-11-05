@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 import ic_des from '../../../Assets/icon/description0.png';
-import {wp, hp, width, height} from '../../../lib/responsive';
+import {wp, hp} from '../../../lib/responsive';
 
 import Description from './content/Description';
 import Chapters from './content/Chapters';
@@ -28,23 +28,27 @@ const DetailItem = (props) => {
     setIsPressed('Description');
   }, []);
 
-  const {pic, title} = props.route.params;
+  const {
+    pic,
+    title,
+    author,
+    state,
+    totalLikes,
+    totalReads,
+  } = props.route.params;
 
   //tại sao phải chạy cái này mà ko set cứng ở trên useState?
   //Bời vì set cứng làm giao diện của button Description bị lỗi
-
-  const descriptionJSX = isPressed === 'Description' ? <Description /> : null;
+  const descriptionJSX =
+    isPressed === 'Description' ? <Description state={state} /> : null;
   const chaptersJSX = isPressed === 'Chapter' ? <Chapters /> : null;
   const commentsJSX = isPressed === 'Comment' ? <Comments /> : null;
   return (
     <SafeAreaView style={styles.container}>
       {/* START - Title */}
       <View style={styles.titleContainer}>
-        {/* START - Img*/}
-        <View
-          style={{
-            flexDirection: 'row',
-          }}>
+        {/* START - Image view*/}
+        <View style={styles.titleViewImg}>
           {/*START - viewLeft*/}
           <View style={styles.titleViewLeftRight}>
             {/* START - btnDescription */}
@@ -56,7 +60,10 @@ const DetailItem = (props) => {
                 inner={isPressed === 'Description' ? true : false}
                 swapShadows // <- change zIndex of each shadow color
                 style={styles.titleNeomorph}>
-                <Image source={ic_des} style={{width: 23, height: 23}} />
+                <Image
+                  source={ic_des}
+                  style={styles.titleViewLeftRightIconDes}
+                />
               </Neomorph>
             </Pressable>
             {/* START - btnChapters */}
@@ -86,19 +93,23 @@ const DetailItem = (props) => {
           </View>
           {/*END - viewLeft*/}
           <Shadow useArt style={styles.titleShadow}>
-            <Image source={pic} resizeMode="contain" style={styles.titleImg} />
+            <Image
+              source={{uri: pic}}
+              resizeMode="contain"
+              style={styles.titleImg}
+            />
           </Shadow>
           {/*START - viewRight*/}
           <View style={styles.titleViewLeftRight}>
-            <View style={{alignItems: 'center'}}>
+            <View style={styles.titleViewLeftRightItem}>
               <FontAwesome5 name="book-reader" size={25} />
-              <Text>0</Text>
+              <Text>{totalReads}</Text>
             </View>
-            <View style={{alignItems: 'center'}}>
+            <View style={styles.titleViewLeftRightItem}>
               <FontAwesome name="heart-o" size={25} />
-              <Text>0</Text>
+              <Text>{totalLikes}</Text>
             </View>
-            <View style={{alignItems: 'center'}}>
+            <View style={styles.titleViewLeftRightItem}>
               <FontAwesome name="bookmark-o" size={25} />
             </View>
           </View>
@@ -108,14 +119,14 @@ const DetailItem = (props) => {
         {/* START - name */}
         <View style={styles.titleViewMangaName}>
           <Text style={styles.titleMangaName}>{title}</Text>
-          <Text style={{fontFamily: 'SF-Pro-Rounded-Thin'}}>Kazue Kato</Text>
+          <Text style={styles.titleAuthor}>{author}</Text>
         </View>
 
         {/* END - name */}
       </View>
       {/* END - Title */}
       {/* START - Content */}
-      <View style={{marginTop: wp(20), flex: 1}}>
+      <View style={styles.contentContainer}>
         {descriptionJSX}
         {chaptersJSX}
         {commentsJSX}
@@ -133,45 +144,55 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
+  titleViewImg: {
+    flexDirection: 'row',
+  },
   titleViewLeftRight: {
     flex: 1,
-    marginHorizontal: wp(20),
+    marginHorizontal: wp(18),
     alignItems: 'center',
     justifyContent: 'space-around',
   },
+  titleViewLeftRightItem: {alignItems: 'center'},
   titleNeomorph: {
-    shadowRadius: 10,
-    borderRadius: 25,
+    shadowRadius: wp(10),
+    borderRadius: wp(25),
     backgroundColor: '#E3F1FA',
-    width: 50,
-    height: 50,
+    width: wp(50),
+    height: hp(50),
     alignItems: 'center',
     justifyContent: 'center',
   },
+  titleViewLeftRightIconDes: {
+    width: wp(23),
+    height: hp(23),
+  },
   titleShadow: {
-    shadowOffset: {width: 10, height: 10},
+    shadowOffset: {width: wp(10), height: hp(10)},
     shadowOpacity: 0.6,
     shadowColor: 'grey',
-    shadowRadius: 20,
-    borderRadius: 20,
+    shadowRadius: wp(20),
+    borderRadius: wp(20),
     backgroundColor: '#E3F1FA',
-    width: 224,
-    height: 299,
-    marginBottom: 20,
+    width: wp(224),
+    height: hp(299),
+    marginBottom: wp(20),
     flex: 1,
   },
   titleImg: {
-    height: 300,
-    width: 225,
-    borderRadius: 10,
+    height: hp(300),
+    width: wp(225),
+    borderRadius: wp(10),
   },
   titleViewMangaName: {
-    width: 330,
+    width: wp(330),
     alignItems: 'center',
   },
   titleMangaName: {
     fontFamily: 'SF-Pro-Rounded-Medium',
-    fontSize: 18,
+    fontSize: wp(18),
     color: '#2f3640',
   },
+  titleAuthor: {fontFamily: 'SF-Pro-Rounded-Thin'},
+  contentContainer: {marginTop: wp(20), flex: 1},
 });

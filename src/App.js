@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   StatusBar,
@@ -23,7 +24,7 @@ import Library from './screens/Library/Library';
 
 //libs
 import {wp} from './lib/responsive';
-
+import firebaseApp from './core/firebase/firebaseConfig';
 //redux
 import store from './redux/store/store';
 
@@ -43,7 +44,22 @@ const Stack = createStackNavigator();
 
 // START - Drawer layout
 const DrawerLayout = (props) => {
+  const [fullName, setFullName] = useState('Họ và tên');
+  const db = firebaseApp.database().ref('Users');
+
+  useEffect(() => {
+    //Nên dùng 'return' để trả về kết quả cuối để tránh rò rỉ ram.
+    return firebaseApp.auth().onAuthStateChanged((user) => {
+      if (user) {
+        db.child(user.uid).on('value', (snapshot) => {
+          setFullName(snapshot.val().fullName);
+        });
+      } else {
+      }
+    });
+  }, []);
   const {navigation} = props;
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={'light-content'} backgroundColor="#E3F1FA" />
@@ -55,7 +71,7 @@ const DrawerLayout = (props) => {
         <Shadow style={styles.accountLayout}>
           <Icon name="user-circle" size={100} color="#95a5a6" />
 
-          <Text style={styles.accountName}>Họ và tên</Text>
+          <Text style={styles.accountName}>{fullName}</Text>
         </Shadow>
       </TouchableOpacity>
       {/* END - Account */}
@@ -76,6 +92,25 @@ const DrawerLayout = (props) => {
         {/* END - Line */}
         {/* START - Button DangXuat */}
         <Pressable
+          onPress={() => {
+            //sign out
+            return firebaseApp
+              .auth()
+              .signOut()
+              .then(() => {
+                // Sign-out successful.
+                //Hàm 'reset()' sẽ xóa mọi stack screen để về 'routes: name'
+                //ở vị trí 'index' tính theo mảng
+                navigation.closeDrawer();
+                navigation.reset({
+                  index: 0,
+                  routes: [{name: 'Auth'}],
+                });
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          }}
           style={styles.contentBtn}
           android_ripple={{color: '#95a5a6', radius: 140}}>
           <Text style={styles.contentBtnTitle}>Đăng xuất</Text>
@@ -91,7 +126,7 @@ const DrawerLayout = (props) => {
 //Cái screen nào cần header thì nhét screen đó vào Stack
 const Root = () => (
   <Stack.Navigator
-    initialRouteName="Home"
+    initialRouteName="Auth"
     screenOptions={{
       title: '',
       headerStyle: {
@@ -103,6 +138,7 @@ const Root = () => (
         letterSpacing: 2,
       },
     }}>
+    <Stack.Screen name="Auth" component={Auth} />
     <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
     <Stack.Screen
       name="ListManga"
@@ -116,13 +152,13 @@ const Root = () => (
       component={Library}
       options={{title: 'Tủ sách'}}
     />
-    <Drawer.Screen
+    <Stack.Screen
       name="Accounts"
       component={Accounts}
       options={{title: 'Tài khoản'}}
     />
-    <Drawer.Screen name="Auth" component={Auth} />
-    <Drawer.Screen
+
+    <Stack.Screen
       name="ForgotPassword"
       component={ForgotPass}
       options={{title: 'Quên mật khẩu'}}

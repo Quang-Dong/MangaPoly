@@ -182,6 +182,7 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.multidex:multidex:2.0.1'  // <-- ADD THIS DEPENDENCY
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules

@@ -2,11 +2,12 @@ import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 
-import {wp, hp} from '../../../../lib/responsive';
+import {wp} from '../../../../lib/responsive';
 
-const Description = () => {
+const Description = (props) => {
+  const {state} = props;
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.container}>
       {/*START - genre*/}
       <View style={styles.contentGenreContainer}>
         <Text style={styles.contentGenreItem}>Action</Text>
@@ -15,38 +16,17 @@ const Description = () => {
         <Text style={styles.contentGenreItem}>History</Text>
       </View>
       {/*END - genre*/}
-      {/*START - status*/}
-      <View
-        style={{
-          flex: 1,
-          marginHorizontal: 10,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
-        <Text style={{fontSize: 16, fontFamily: 'SF-Pro-Rounded-Thin'}}>
-          Trạng thái:{' '}
-        </Text>
-        <Text style={{fontFamily: 'SF-Pro-Rounded-Medium', fontSize: wp(17)}}>
-          Đang cập nhật
-        </Text>
+      {/*START - state*/}
+      <View style={styles.contentStateView}>
+        <Text style={styles.contentTitleTxt}>Trạng thái: </Text>
+        <Text style={styles.contentStateTxt}>{state}</Text>
       </View>
-      {/*END - status*/}
+      {/*END - state*/}
       {/*START - Synopsis*/}
-      <View
-        style={{
-          marginHorizontal: 10,
-          flex: 6,
-        }}>
-        <Text style={{fontSize: 16, fontFamily: 'SF-Pro-Rounded-Thin'}}>
-          Tóm tắt:
-        </Text>
+      <View style={styles.contentSynopsisView}>
+        <Text style={styles.contentTitleTxt}>Tóm tắt:</Text>
         <ScrollView style={{}}>
-          <Text
-            style={{
-              fontFamily: 'SF-Pro-Rounded-Light',
-              fontSize: wp(17),
-              paddingBottom: wp(10),
-            }}>
+          <Text style={styles.contentSynopsisTxt}>
             Spirit Sword Master Comics Online. Set up and killed by his best
             buddy, a top-notch swordsman wakes up finding himself turned back
             into his teenage self. Restarting again from the weakling bullied by
@@ -67,6 +47,9 @@ const Description = () => {
 export default Description;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   contentGenreContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -75,11 +58,34 @@ const styles = StyleSheet.create({
   contentGenreItem: {
     borderWidth: 1,
     borderColor: 'black',
-    paddingHorizontal: 15,
+    paddingHorizontal: wp(15),
     paddingVertical: 1,
-    margin: 5,
+    margin: wp(5),
     fontSize: wp(15),
-    borderRadius: 5,
+    borderRadius: wp(5),
     fontFamily: 'SF-Pro-Rounded-Light',
+  },
+  contentStateView: {
+    flex: 1,
+    marginHorizontal: wp(10),
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  contentStateTxt: {
+    fontFamily: 'SF-Pro-Rounded-Medium',
+    fontSize: wp(17),
+  },
+  contentTitleTxt: {
+    fontSize: wp(16),
+    fontFamily: 'SF-Pro-Rounded-Thin',
+  },
+  contentSynopsisView: {
+    marginHorizontal: wp(10),
+    flex: 6,
+  },
+  contentSynopsisTxt: {
+    fontFamily: 'SF-Pro-Rounded-Light',
+    fontSize: wp(17),
+    paddingBottom: wp(10),
   },
 });

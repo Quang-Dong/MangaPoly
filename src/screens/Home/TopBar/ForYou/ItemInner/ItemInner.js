@@ -24,9 +24,17 @@ const _content = (props) => (
       props.navigation.navigate('DetailItem', {
         pic: props.pic,
         title: props.title,
+        author: props.author,
+        state: props.state,
+        totalLikes: props.totalLikes,
+        totalReads: props.totalReads,
       });
     }}>
-    <Image source={props.pic} resizeMode="cover" style={styles.contentImg} />
+    <Image
+      source={{uri: props.pic}}
+      resizeMode="cover"
+      style={styles.contentImg}
+    />
     <View style={styles.contentTextView}>
       <Text style={styles.contentText}>{props.title}</Text>
     </View>
