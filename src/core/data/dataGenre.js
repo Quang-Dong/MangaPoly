@@ -2,28 +2,39 @@
 const DATA = [
   {
     id: '1',
-    title: 'Hành động',
-    name: 'Action',
+    name: 'Hành động',
   },
   {
     id: '2',
-    title: 'Mạo hiểm',
-    name: 'Aventure',
+    name: 'Mạo hiểm',
   },
   {
     id: '3',
-    title: 'Huyền huyễn',
-    name: 'Fantasy',
+    name: 'Huyền huyễn',
   },
   {
     id: '4',
-    title: 'Kinh dị',
-    name: 'Horror',
+    name: 'Kinh dị',
   },
   {
     id: '5',
-    title: 'Lãng mạn',
-    name: 'Romance',
+    name: 'Trường học',
+  },
+  {
+    id: '6',
+    name: 'Hài hước',
+  },
+  {
+    id: '7',
+    name: 'Tổng tài',
+  },
+  {
+    id: '8',
+    name: 'Viễn tưởng',
+  },
+  {
+    id: '9',
+    name: 'Xuyên không',
   },
 ];
 

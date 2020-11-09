@@ -18,7 +18,9 @@ import Home from './screens/Home/Home';
 import Accounts from './screens/Accounts/Accounts';
 import Search from './screens/Search/Search';
 import ForgotPass from './screens/Auth/ForgotPass/ForgotPassword';
-import ListManga from './screens/Home/ListItem/ListManga';
+import ListManga from './screens/ListItem/ListManga';
+import ListCmt from './screens/ListItem/ListCmt';
+import ListImages from './screens/ListItem/ListImages';
 import DetailItem from './screens/Home/DetailItem/detailItem';
 import Library from './screens/Library/Library';
 
@@ -52,7 +54,7 @@ const DrawerLayout = (props) => {
     return firebaseApp.auth().onAuthStateChanged((user) => {
       if (user) {
         db.child(user.uid).on('value', (snapshot) => {
-          setFullName(snapshot.val().fullName);
+          setFullName(snapshot.val() ? snapshot.val().fullName : 'Họ và tên');
         });
       } else {
       }
@@ -145,6 +147,9 @@ const Root = () => (
       component={ListManga}
       options={({route}) => ({title: route.params.title})}
     />
+
+    <Stack.Screen name="ListCmt" component={ListCmt} />
+    <Stack.Screen name="ListImages" component={ListImages} />
     <Stack.Screen name="DetailItem" component={DetailItem} />
     <Stack.Screen name="Search" component={Search} />
     <Stack.Screen

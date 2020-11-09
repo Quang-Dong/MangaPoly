@@ -5,15 +5,19 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {wp} from '../../../../lib/responsive';
 
 const Description = (props) => {
-  const {state} = props;
+  const {state, des, genre} = props;
+
   return (
     <View style={styles.container}>
       {/*START - genre*/}
       <View style={styles.contentGenreContainer}>
-        <Text style={styles.contentGenreItem}>Action</Text>
-        <Text style={styles.contentGenreItem}>Romance</Text>
-        <Text style={styles.contentGenreItem}>Fantasy</Text>
-        <Text style={styles.contentGenreItem}>History</Text>
+        {genre
+          ? genre.map((e) => (
+              <Text key={e} style={styles.contentGenreItem}>
+                {e}
+              </Text>
+            ))
+          : null}
       </View>
       {/*END - genre*/}
       {/*START - state*/}
@@ -26,17 +30,7 @@ const Description = (props) => {
       <View style={styles.contentSynopsisView}>
         <Text style={styles.contentTitleTxt}>Tóm tắt:</Text>
         <ScrollView style={{}}>
-          <Text style={styles.contentSynopsisTxt}>
-            Spirit Sword Master Comics Online. Set up and killed by his best
-            buddy, a top-notch swordsman wakes up finding himself turned back
-            into his teenage self. Restarting again from the weakling bullied by
-            all, he is determined to seek revenge and cherish the girl who once
-            sacrificed her life for him. MangaToon got authorization from
-            iCiyuan to publish this manga, the content is the author's own point
-            of view, and does not represent the stand of MangaToon. Other than
-            English, MangaToon also provides the following language versions of
-            Spirit Sword Master
-          </Text>
+          <Text style={styles.contentSynopsisTxt}>{des}</Text>
         </ScrollView>
       </View>
       {/*END - Synopsis*/}
@@ -58,7 +52,7 @@ const styles = StyleSheet.create({
   contentGenreItem: {
     borderWidth: 1,
     borderColor: 'black',
-    paddingHorizontal: wp(15),
+    paddingHorizontal: wp(10),
     paddingVertical: 1,
     margin: wp(5),
     fontSize: wp(15),

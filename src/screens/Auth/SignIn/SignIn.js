@@ -16,6 +16,8 @@ import firebaseApp from '../../../core/firebase/firebaseConfig';
 import {Neomorph} from 'react-native-neomorph-shadows';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
+const genreRef = firebaseApp.database().ref('Genres');
+
 const SignIn = ({navigation}) => {
   const [hidePass, setHidePass] = useState(true);
   const [err, setErr] = useState(null);
@@ -23,18 +25,40 @@ const SignIn = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  useEffect(() => {
+  const [data, setData] = useState();
+
+  const getGenres = () => {
+    var li = [];
+
+    genreRef.once('value', (snapShot) => {
+      snapShot.forEach((child) => {
+        // console.log(child.key);
+        const key = child.key;
+        const genres = child.val();
+        li.push({key, genres});
+      });
+      // setData(li);
+      // console.log(li);
+    });
+
     //onAuthStateChanged luôn luôn lắng nghe va xác thực xem, nếu người user data còn ở local hay
     //không thì cũng phải tắt loading screen đi, vì loading được bật mặc định.
     //Nên dùng 'return' để trả về kết quả cuối để tránh rò rỉ ram.
-    return firebaseApp.auth().onAuthStateChanged((user) => {
+
+    firebaseApp.auth().onAuthStateChanged((user) => {
       if (user) {
         console.log(user.email);
-        navigation.replace('Home');
+        setTimeout(() => {
+          navigation.replace('Home', {data: li});
+        }, 1000);
       } else {
         setShowLoading(false);
       }
     });
+  };
+
+  useEffect(() => {
+    getGenres();
   }, []);
 
   const signIn = () => {

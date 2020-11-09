@@ -29,20 +29,31 @@ const DetailItem = (props) => {
   }, []);
 
   const {
+    id,
     pic,
     title,
     author,
     state,
+    des,
     totalLikes,
     totalReads,
+    genre,
   } = props.route.params;
 
   //tại sao phải chạy cái này mà ko set cứng ở trên useState?
   //Bời vì set cứng làm giao diện của button Description bị lỗi
   const descriptionJSX =
-    isPressed === 'Description' ? <Description state={state} /> : null;
-  const chaptersJSX = isPressed === 'Chapter' ? <Chapters /> : null;
-  const commentsJSX = isPressed === 'Comment' ? <Comments /> : null;
+    isPressed === 'Description' ? (
+      <Description state={state} des={des} genre={genre} />
+    ) : null;
+  const chaptersJSX =
+    isPressed === 'Chapter' ? (
+      <Chapters id={id} navigation={props.navigation} />
+    ) : null;
+  const commentsJSX =
+    isPressed === 'Comment' ? (
+      <Comments id={id} navigation={props.navigation} />
+    ) : null;
   return (
     <SafeAreaView style={styles.container}>
       {/* START - Title */}

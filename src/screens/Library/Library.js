@@ -8,7 +8,7 @@ import {
 
 import {wp} from '../../lib/responsive';
 
-import ListManga from '../Home/ListItem/ListManga';
+import ListManga from '../ListItem/ListManga';
 import History from './History';
 import Bookmark from './Bookmark';
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -7,25 +7,27 @@ import {
 } from 'react-native';
 
 import {wp} from '../../lib/responsive';
-import DATA from '../../core/data/dataGenre';
 
 import Header from './Header/Header';
 import ForYou from './TopBar/ForYou/ForYou';
-import ListManga from './ListItem/ListManga';
+import ListMangaGenre from '../ListItem/ListMangaGenre';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 const Tab = createMaterialTopTabNavigator();
 
-const Home = ({navigation}) => {
+const Home = (props) => {
+  const {data} = props.route.params;
+
   const openMenu = () => {
-    navigation.openDrawer();
+    props.navigation.openDrawer();
   };
+
   const {width} = useWindowDimensions();
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={'light-content'} />
-      <Header openMenu={openMenu} navigation={navigation} />
+      <Header openMenu={openMenu} navigation={props.navigation} />
       <Tab.Navigator
         lazy={true}
         tabBarOptions={{
@@ -40,13 +42,8 @@ const Home = ({navigation}) => {
           component={ForYou}
           options={{title: 'Cho bạn'}}
         />
-        {DATA.map((e) => (
-          <Tab.Screen
-            key={e.id}
-            name={e.name}
-            component={ListManga}
-            options={{title: e.title}}
-          />
+        {data.map((e) => (
+          <Tab.Screen key={e.key} name={e.genres} component={ListMangaGenre} />
         ))}
       </Tab.Navigator>
     </SafeAreaView>
