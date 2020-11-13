@@ -16,6 +16,7 @@ const ListManga = (props) => {
         extraData={data}
         data={data}
         renderItem={({item}) => {
+          const genre = item.genres.split(',');
           return (
             // START - Item
             <TouchableOpacity
@@ -30,7 +31,7 @@ const ListManga = (props) => {
                   des: item.description,
                   totalLikes: item.totalLikes,
                   totalReads: item.totalReads,
-                  genre: item.genre,
+                  genre,
                 });
               }}
               style={styles.items}>
@@ -50,10 +51,13 @@ const ListManga = (props) => {
                 {/* START - Title */}
                 <Text style={styles.titleTxt}>{item.name}</Text>
                 {/* END - Title */}
+                {/* START - Last chapter */}
+                <Text style={styles.iconTxt}>300 chapter</Text>
+                {/* END - Last chapter */}
                 {/* START - Genre */}
                 <View style={styles.genreContainer}>
-                  {item.genre
-                    ? item.genre.map((e) => (
+                  {genre
+                    ? genre.map((e) => (
                         <Text key={e} style={styles.genreItem}>
                           {e}
                         </Text>
@@ -81,9 +85,6 @@ const ListManga = (props) => {
                   {/* END - Icon likes */}
                 </View>
                 {/* END - Icons */}
-                {/* START - Last chapter */}
-                <Text style={styles.iconTxt}>300 chapter</Text>
-                {/* END - Last chapter */}
                 {/* START - State */}
                 <View style={styles.stateView}>
                   <Text style={styles.stateTxt}>{item.state}</Text>

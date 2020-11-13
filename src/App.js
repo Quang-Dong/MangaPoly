@@ -37,6 +37,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {Provider} from 'react-redux';
 import {Shadow} from 'react-native-neomorph-shadows';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import {TextInput} from 'react-native-gesture-handler';
 
 const {width} = Dimensions.get('window');
 
@@ -151,7 +152,11 @@ const Root = () => (
     <Stack.Screen name="ListCmt" component={ListCmt} />
     <Stack.Screen name="ListImages" component={ListImages} />
     <Stack.Screen name="DetailItem" component={DetailItem} />
-    <Stack.Screen name="Search" component={Search} />
+    <Stack.Screen
+      name="Search"
+      component={Search}
+      options={{headerShown: false}}
+    />
     <Stack.Screen
       name="Library"
       component={Library}

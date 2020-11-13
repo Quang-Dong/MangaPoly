@@ -4,6 +4,7 @@ import {StyleSheet, ScrollView, StatusBar} from 'react-native';
 import * as action from '../../../../redux/actions/actions';
 
 import Item from './Item/Item';
+import ShuffleItem from './Item/ShuffleItem';
 
 import {connect} from 'react-redux';
 
@@ -17,7 +18,7 @@ const ForYou = (props) => (
     <Item navigation={props.navigation} title="Tập mới nhất" />
 
     {/* START - Recommend */}
-    <Item navigation={props.navigation} title="Hôm nay đọc gì?" />
+    <ShuffleItem navigation={props.navigation} title="Hôm nay đọc gì?" />
   </ScrollView>
 );
 

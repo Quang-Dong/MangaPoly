@@ -1,12 +1,19 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {StyleSheet, View, Text, Pressable, Image} from 'react-native';
-import {FlatList, TextInput} from 'react-native-gesture-handler';
+import {
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 
 import {wp, hp} from '../../lib/responsive';
 
 import ic_send from '../../Assets/icon/ic_send.png';
 import firebaseApp from '../../core/firebase/firebaseConfig';
 import ic_user from '../../Assets/icon/ic_user.png';
+
+const cmtRef = firebaseApp.database().ref('Comments');
+const userRef = firebaseApp.database().ref('Users');
 
 const ListCmt = (props) => {
   const [size, setSize] = useState(50);
@@ -18,14 +25,12 @@ const ListCmt = (props) => {
 
   const {id} = props.route.params; // id truyện cần get cmt
 
-  const cmtRef = firebaseApp.database().ref('Comments');
-  const userRef = firebaseApp.database().ref('Users');
-
-  const getCmt = () => {
+  const getCmt = useCallback(() => {
     cmtRef.child(`${id}`).on('value', (snapshot) => {
       var li = [];
       snapshot.forEach((child) => {
         let info = child.child('info').val();
+
         child.child('cmts').forEach((child1) => {
           let cmt = child1.val();
           let key = child1.key;
@@ -35,7 +40,7 @@ const ListCmt = (props) => {
       //   console.log(li);
       setData(li);
     });
-  };
+  }, []);
 
   const getUser = () => {
     firebaseApp.auth().onAuthStateChanged((user) => {
@@ -53,17 +58,14 @@ const ListCmt = (props) => {
   useEffect(() => {
     getCmt();
     getUser();
-  }, []);
+  }, []); //useEffect chỉ chạy khi dữ liệu ở comments thay đổi
 
   return (
     <View style={styles.container}>
       <FlatList
         data={data}
         renderItem={({item}) => (
-          <Pressable
-            key={item.key}
-            android_ripple={{color: 'white', radius: wp(500)}}
-            style={styles.cmtLayout}>
+          <View key={item.key} style={styles.cmtLayout}>
             <Image
               source={
                 item.info.avatar === '' ? ic_user : {uri: item.info.avatar}
@@ -72,13 +74,30 @@ const ListCmt = (props) => {
               style={styles.avaLayout}
             />
             <View style={styles.cmtRightLayout}>
-              <View style={styles.cmtRightLayoutNext}>
-                <Text style={styles.nameLayout}>{item.info.userName}</Text>
-                <Text style={styles.contentLayout}>{item.cmt.userCmt}</Text>
+              <Pressable android_ripple={{color: 'white', radius: 500}}>
+                <View style={styles.cmtRightLayoutNext}>
+                  <Text style={styles.nameLayout}>{item.info.userName}</Text>
+                  <Text style={styles.contentLayout}>{item.cmt.userCmt}</Text>
+                </View>
+              </Pressable>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.uploadedLayout}>
+                  {new Date(item.cmt.timeCreated).toLocaleDateString() +
+                    ' - ' +
+                    new Date(item.cmt.timeCreated).toLocaleTimeString()}
+                </Text>
+                {item.info.uid === uID && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      const cmtUserRef = cmtRef.child(id).child(uID);
+                      cmtUserRef.child('cmts').child(item.key).remove();
+                    }}>
+                    <Text style={styles.uploadedLayout}>Xóa</Text>
+                  </TouchableOpacity>
+                )}
               </View>
-              <Text style={styles.uploadedLayout}>{item.cmt.timeCreated}</Text>
             </View>
-          </Pressable>
+          </View>
         )}
         keyExtractor={(item) => item.key}
       />
@@ -101,20 +120,10 @@ const ListCmt = (props) => {
             ref.child('info').set({
               avatar: avatar,
               userName: fullName,
+              uid: uID,
             });
-            //START - Get current time
-            var today = new Date();
-            var date =
-              today.getFullYear() +
-              '/' +
-              (today.getMonth() + 1) +
-              '/' +
-              today.getDate();
-            var time = today.getHours() + ':' + today.getMinutes();
-            var dateTime = date + ' ' + time;
-            //END - Get current time
             ref.child('cmts').push({
-              timeCreated: dateTime,
+              timeCreated: Date.now(),
               userCmt: val,
             });
             setVal('');

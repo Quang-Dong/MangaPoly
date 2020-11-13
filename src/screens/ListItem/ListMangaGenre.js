@@ -13,7 +13,6 @@ const mangaRef = firebaseApp.database().ref('Mangas');
 
 const ListMangaGenre = (props) => {
   const [data, setData] = useState();
-  //   const {title} = props.route.params;
   const route = useRoute();
 
   const getMangas = () => {
@@ -23,21 +22,15 @@ const ListMangaGenre = (props) => {
       .equalTo(route.name.toLowerCase())
       .once('value', (snapShot) => {
         snapShot.forEach((child) => {
-          // console.log(child.val());
-
           const manga = child.val();
-
           li.push(manga);
         });
       });
-    // setTimeout(function () {
-    //   li.reverse();
-    // }, 900);
 
     setTimeout(() => {
       setData(li);
       //   console.log(li);
-    }, 500);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -50,6 +43,7 @@ const ListMangaGenre = (props) => {
         extraData={data}
         data={data}
         renderItem={({item}) => {
+          const genre = item.genres.split(',');
           return (
             // START - Item
             <TouchableOpacity
@@ -64,7 +58,7 @@ const ListMangaGenre = (props) => {
                   des: item.description,
                   totalLikes: item.totalLikes,
                   totalReads: item.totalReads,
-                  genre: item.genre,
+                  genre,
                 });
               }}
               style={styles.items}>
@@ -84,10 +78,13 @@ const ListMangaGenre = (props) => {
                 {/* START - Title */}
                 <Text style={styles.titleTxt}>{item.name}</Text>
                 {/* END - Title */}
+                {/* START - Last chapter */}
+                <Text style={styles.iconTxt}>300 chapter</Text>
+                {/* END - Last chapter */}
                 {/* START - Genre */}
                 <View style={styles.genreContainer}>
-                  {item.genre
-                    ? item.genre.map((e) => (
+                  {genre
+                    ? genre.map((e) => (
                         <Text key={e} style={styles.genreItem}>
                           {e}
                         </Text>
@@ -115,9 +112,6 @@ const ListMangaGenre = (props) => {
                   {/* END - Icon likes */}
                 </View>
                 {/* END - Icons */}
-                {/* START - Last chapter */}
-                <Text style={styles.iconTxt}>300 chapter</Text>
-                {/* END - Last chapter */}
                 {/* START - State */}
                 <View style={styles.stateView}>
                   <Text style={styles.stateTxt}>{item.state}</Text>

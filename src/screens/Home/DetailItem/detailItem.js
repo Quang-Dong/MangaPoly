@@ -6,6 +6,7 @@ import {
   Text,
   Image,
   Pressable,
+  TouchableOpacity,
 } from 'react-native';
 
 import ic_des from '../../../Assets/icon/description0.png';
@@ -23,6 +24,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 //In React, components need to be capitalized, and custom hooks need to start with use.
 const DetailItem = (props) => {
   const [isPressed, setIsPressed] = useState(null);
+  const [like, setLike] = useState(false);
 
   useEffect(() => {
     setIsPressed('Description');
@@ -116,10 +118,14 @@ const DetailItem = (props) => {
               <FontAwesome5 name="book-reader" size={25} />
               <Text>{totalReads}</Text>
             </View>
-            <View style={styles.titleViewLeftRightItem}>
-              <FontAwesome name="heart-o" size={25} />
+            <TouchableOpacity
+              onPress={() => {
+                setLike(!like);
+              }}
+              style={styles.titleViewLeftRightItem}>
+              <FontAwesome name={like ? 'heart' : 'heart-o'} size={25} />
               <Text>{totalLikes}</Text>
-            </View>
+            </TouchableOpacity>
             <View style={styles.titleViewLeftRightItem}>
               <FontAwesome name="bookmark-o" size={25} />
             </View>

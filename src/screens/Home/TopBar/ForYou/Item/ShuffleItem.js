@@ -11,31 +11,51 @@ import {FlatList} from 'react-native-gesture-handler';
 
 //components
 import {wp, hp} from '../../../../../lib/responsive';
-// import {_title, _content} from '../ItemInner/ItemInner';
-import DATA from '../../../../../core/data/dataManga';
+
 import firebaseApp from '../../../../../core/firebase/firebaseConfig';
 import arrow_right from '../../../../../Assets/icon/arrow_right.png';
 
 const db = firebaseApp.database().ref('Mangas');
-const Item = (props) => {
+const ShuffleItem = (props) => {
   const [data, setData] = useState();
   const {title} = props;
+  var li = [];
 
-  const a = title === 'Thịnh hành' ? 'totalReads' : b;
-  const b = title === 'Tập mới nhất' ? 'updated' : 'id';
+  // START - Shuffle Aray - Hàm này trả ra 1 cái mảng đã được ngẫu nhiên thứ tự phần từ
+  const shuffle = (array) => {
+    var currentIndex = array.length,
+      temporaryValue,
+      randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+  };
+  //END - Shuffle Aray
+
+  // setTimeout(() => {
+  //   shuffle(li);
+  // }, 1000);
 
   useEffect(() => {
-    db.orderByChild(a || b).once('value', (snapShot) => {
-      var li = [];
-
+    db.once('value', (snapShot) => {
       snapShot.forEach((child) => {
         const data1 = child.val();
         li.push(data1);
         // console.log(child.val().genre);
       });
       // console.log(li);
-      li.reverse();
-
+      shuffle(li);
       setData(li);
     });
 
@@ -72,7 +92,7 @@ const Item = (props) => {
                 des: item.description,
                 totalLikes: item.totalLikes,
                 totalReads: item.totalReads,
-                genre: item.genres.split(','),
+                genre: item.genre,
               });
               console.log(item.id);
             }}>
@@ -93,7 +113,7 @@ const Item = (props) => {
   );
 };
 
-export default Item;
+export default ShuffleItem;
 
 const styles = StyleSheet.create({
   container: {

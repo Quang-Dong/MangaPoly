@@ -13,7 +13,6 @@ const Comments = (props) => {
   const [size, setSize] = useState(50);
   const [data, setData] = useState('');
   const {id, navigation} = props;
-
   const getCmt = () => {
     db.child(`${id}`).on('value', (snapshot) => {
       var li = [];
@@ -55,7 +54,11 @@ const Comments = (props) => {
                 <Text style={styles.nameLayout}>{item.info.userName}</Text>
                 <Text style={styles.contentLayout}>{item.cmt.userCmt}</Text>
               </View>
-              <Text style={styles.uploadedLayout}>{item.cmt.timeCreated}</Text>
+              <Text style={styles.uploadedLayout}>
+                {new Date(item.cmt.timeCreated).toLocaleDateString() +
+                  ' - ' +
+                  new Date(item.cmt.timeCreated).toLocaleTimeString()}
+              </Text>
             </View>
           </Pressable>
         )}
