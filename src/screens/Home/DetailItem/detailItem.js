@@ -15,6 +15,7 @@ import {wp, hp} from '../../../lib/responsive';
 import Description from './content/Description';
 import Chapters from './content/Chapters';
 import Comments from './content/Comments';
+import firebaseApp from '../../../core/firebase/firebaseConfig';
 
 import {Shadow, Neomorph} from 'react-native-neomorph-shadows';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -25,10 +26,19 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const DetailItem = (props) => {
   const [isPressed, setIsPressed] = useState(null);
   const [like, setLike] = useState(false);
+  const [countLikes, setCountLikes] = useState(totalLikes);
+  const [uID, setUID] = useState();
+
+  const likeRef = firebaseApp.database().ref('Liked');
+  const mangaRef = firebaseApp.database().ref('Mangas');
+  const user = firebaseApp.auth().currentUser;
+
+  var isLiked = false;
 
   useEffect(() => {
     setIsPressed('Description');
-  }, []);
+    getLikeState();
+  });
 
   const {
     id,
@@ -41,6 +51,36 @@ const DetailItem = (props) => {
     totalReads,
     genre,
   } = props.route.params;
+
+  const getLikeState = () => {
+    if (user) {
+      setUID(user.uid);
+      likeRef
+        .child(id)
+        .child(user.uid)
+        .on('value', (snapshot) => {
+          isLiked = snapshot.val();
+          setLike(isLiked);
+        });
+
+      mangaRef
+        .child(id)
+        .child('totalLikes')
+        .on('value', (snapshot) => {
+          const Likes = snapshot.val();
+          setCountLikes(Likes);
+        });
+    }
+  };
+
+  const liked = () => {
+    likeRef.child(id).child(uID).set(!isLiked);
+    mangaRef
+      .child(id)
+      .update(
+        like ? {totalLikes: countLikes - 1} : {totalLikes: countLikes + 1},
+      );
+  };
 
   //tại sao phải chạy cái này mà ko set cứng ở trên useState?
   //Bời vì set cứng làm giao diện của button Description bị lỗi
@@ -120,11 +160,11 @@ const DetailItem = (props) => {
             </View>
             <TouchableOpacity
               onPress={() => {
-                setLike(!like);
+                liked();
               }}
               style={styles.titleViewLeftRightItem}>
-              <FontAwesome name={like ? 'heart' : 'heart-o'} size={25} />
-              <Text>{totalLikes}</Text>
+              <FontAwesome name={!like ? 'heart-o' : 'heart'} size={25} />
+              <Text>{countLikes}</Text>
             </TouchableOpacity>
             <View style={styles.titleViewLeftRightItem}>
               <FontAwesome name="bookmark-o" size={25} />
