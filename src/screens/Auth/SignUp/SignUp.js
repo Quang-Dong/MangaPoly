@@ -30,17 +30,6 @@ const SignUp = ({navigation}) => {
     Keyboard.dismiss();
     //show loading screen
     setIsShowLoading(true);
-    //START - Get current time
-    const today = new Date();
-    const date =
-      today.getFullYear() +
-      '/' +
-      (today.getMonth() + 1) +
-      '/' +
-      today.getDate();
-    const time = today.getHours() + ':' + today.getMinutes();
-    const dateTime = date + ' - ' + time;
-    //END - Get current time
 
     if (password.trim() !== rePassword.trim()) {
       setErr('Mật khẩu không trùng khớp!');
@@ -77,14 +66,17 @@ const SignUp = ({navigation}) => {
           await firebaseApp.database().ref('Users').child(user.uid).set({
             id: user.uid,
             ava: '',
-            email: user.email,
+            email: user.email.trim(),
             type: 'normal',
-            fullName: fullName,
-            created: dateTime,
+            fullName: fullName.trim(),
+            created: Date.now(),
           });
-          navigation.replace('Home');
+
+          user.updateProfile({
+            displayName: fullName.trim(),
+          });
         } else {
-          // No user is signed in.
+          setErr('Có lỗi gì đó xảy ra, vui lòng khởi động lại ứng dụng!');
         }
       });
     }
@@ -127,7 +119,7 @@ const SignUp = ({navigation}) => {
           keyboardType="email-address"
           textContentType="emailAddress"
           value={email}
-          onChangeText={(val) => setEmail(val)}
+          onChangeText={(val) => setEmail(val.trim())}
         />
       </TextInputLayout>
       {/* END - TextInput Layout Email */}
@@ -142,7 +134,7 @@ const SignUp = ({navigation}) => {
           autoCapitalize="none"
           secureTextEntry={hidePass ? true : false}
           value={password}
-          onChangeText={(val) => setPassword(val)}
+          onChangeText={(val) => setPassword(val.trim())}
         />
         <Icon
           name={hidePass ? 'eye-slash' : 'eye'}
@@ -163,7 +155,7 @@ const SignUp = ({navigation}) => {
           autoCapitalize="none"
           secureTextEntry={hidePass ? true : false}
           value={rePassword}
-          onChangeText={(val) => setRePassword(val)}
+          onChangeText={(val) => setRePassword(val.trim())}
         />
         <Icon
           name={hidePass ? 'eye-slash' : 'eye'}

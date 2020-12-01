@@ -28,7 +28,7 @@ const ShuffleItem = (props) => {
       randomIndex;
 
     // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
+    while (currentIndex !== 0) {
       // Pick a remaining element...
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex -= 1;
@@ -56,7 +56,9 @@ const ShuffleItem = (props) => {
       });
       // console.log(li);
       shuffle(li);
-      setData(li);
+      setTimeout(() => {
+        setData(li);
+      }, 500);
     });
 
     // console.log(JSON.stringify(data));
@@ -81,6 +83,7 @@ const ShuffleItem = (props) => {
         showsHorizontalScrollIndicator={false} // ẩn thanh cuộn
         renderItem={({item}) => (
           <TouchableOpacity
+            key={item.id}
             style={styles.contentContainer}
             onPress={() => {
               props.navigation.navigate('DetailItem', {

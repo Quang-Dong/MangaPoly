@@ -27,15 +27,15 @@ const SignIn = ({navigation}) => {
 
   const [data, setData] = useState();
 
-  const getGenres = () => {
-    var li = [];
+  var genreList = [];
 
+  const getGenres = () => {
     genreRef.once('value', (snapShot) => {
       snapShot.forEach((child) => {
         // console.log(child.key);
         const key = child.key;
         const genres = child.val();
-        li.push({key, genres});
+        genreList.push({key, genres});
       });
       // setData(li);
       // console.log(li);
@@ -49,7 +49,7 @@ const SignIn = ({navigation}) => {
       if (user) {
         console.log(user.email);
         setTimeout(() => {
-          navigation.replace('Home', {data: li});
+          navigation.replace('Home', {data: genreList});
         }, 1000);
       } else {
         setShowLoading(false);
@@ -70,7 +70,7 @@ const SignIn = ({navigation}) => {
       .then(() => {
         setErr('');
         setShowLoading(false);
-        navigation.replace('Home');
+        navigation.replace('Home', {data: genreList});
       })
       .catch((error) => {
         setShowLoading(false);

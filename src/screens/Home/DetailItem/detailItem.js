@@ -36,9 +36,13 @@ const DetailItem = (props) => {
   var isLiked = false;
 
   useEffect(() => {
-    setIsPressed('Description');
     getLikeState();
   });
+
+  //tại sao lại set ở đây, mà ko set thẳng trên useState? là vì set ở trên useState sẽ bị lỗi UI
+  useEffect(() => {
+    setIsPressed('Description');
+  }, []);
 
   const {
     id,

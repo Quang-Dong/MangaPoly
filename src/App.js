@@ -9,7 +9,6 @@ import {
   Pressable,
   View,
   TouchableOpacity,
-  Dimensions,
 } from 'react-native';
 
 //screens
@@ -25,7 +24,7 @@ import DetailItem from './screens/Home/DetailItem/detailItem';
 import Library from './screens/Library/Library';
 
 //libs
-import {wp} from './lib/responsive';
+import {wp, width} from './lib/responsive';
 import firebaseApp from './core/firebase/firebaseConfig';
 //redux
 import store from './redux/store/store';
@@ -37,9 +36,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {Provider} from 'react-redux';
 import {Shadow} from 'react-native-neomorph-shadows';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {TextInput} from 'react-native-gesture-handler';
-
-const {width} = Dimensions.get('window');
 
 const Drawer = createDrawerNavigator();
 
@@ -54,10 +50,11 @@ const DrawerLayout = (props) => {
     //Nên dùng 'return' để trả về kết quả cuối để tránh rò rỉ ram.
     return firebaseApp.auth().onAuthStateChanged((user) => {
       if (user) {
-        db.child(user.uid).on('value', (snapshot) => {
-          setFullName(snapshot.val() ? snapshot.val().fullName : 'Họ và tên');
-        });
-      } else {
+        db.child(user.uid)
+          .child('fullName')
+          .on('value', (snapshot) => {
+            setFullName(snapshot.val() ? snapshot.val() : 'Họ và tên');
+          });
       }
     });
   }, []);
@@ -69,7 +66,7 @@ const DrawerLayout = (props) => {
       {/* START - Account */}
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Accounts');
+          navigation.navigate('Accounts', {navigation});
         }}>
         <Shadow style={styles.accountLayout}>
           <Icon name="user-circle" size={100} color="#95a5a6" />
@@ -102,9 +99,11 @@ const DrawerLayout = (props) => {
               .signOut()
               .then(() => {
                 // Sign-out successful.
+
+                navigation.closeDrawer();
+
                 //Hàm 'reset()' sẽ xóa mọi stack screen để về 'routes: name'
                 //ở vị trí 'index' tính theo mảng
-                navigation.closeDrawer();
                 navigation.reset({
                   index: 0,
                   routes: [{name: 'Auth'}],

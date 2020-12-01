@@ -37,8 +37,8 @@ const ListImages = (props) => {
         data={data}
         renderItem={({item}) => (
           // <ScaleImage uri={item.imgs} />
-
           <Image
+            key={item.key}
             source={{uri: item.imgs}}
             resizeMode="stretch"
             style={{

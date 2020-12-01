@@ -61,6 +61,7 @@ const Item = (props) => {
         showsHorizontalScrollIndicator={false} // ẩn thanh cuộn
         renderItem={({item}) => (
           <TouchableOpacity
+            key={item.id}
             style={styles.contentContainer}
             onPress={() => {
               props.navigation.navigate('DetailItem', {

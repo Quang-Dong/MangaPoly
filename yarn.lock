@@ -6416,6 +6416,11 @@ react-native-gesture-handler@^1.8.0:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+react-native-image-picker@^2.3.4:
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-2.3.4.tgz#1c31dbe9872ade17e2ed6457b0c669d63c322590"
+  integrity sha512-4UHu+zOyDT570r5mIbjH6h1iMrKIq/qfsKiAVUEZwncVegh0usJiEYNyJw4CEVwNeehmye/ia5sLDsa+kzIE4g==
+
 react-native-iphone-x-helper@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.1.tgz"
@@ -6428,6 +6433,11 @@ react-native-neomorph-shadows@^1.1.2:
   dependencies:
     "@react-native-community/art" "^1.2.0"
     prop-types "^15.7.2"
+
+react-native-popup-menu@^0.15.9:
+  version "0.15.9"
+  resolved "https://registry.yarnpkg.com/react-native-popup-menu/-/react-native-popup-menu-0.15.9.tgz#75bccf71ff4627cb302d871a28be84a91eb2f8d9"
+  integrity sha512-PO99dptMocEfUSS3SM7gY6UqophaBxizKjnZ7FcEwa+H4ONVxTk310/JCXJ9vdNunomgpxHluKRXnApfm9Md1w==
 
 react-native-reanimated@^1.13.1:
   version "1.13.1"

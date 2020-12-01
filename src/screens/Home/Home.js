@@ -17,6 +17,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 const Tab = createMaterialTopTabNavigator();
 
 const Home = (props) => {
+  //Nhận data từ Sign In
   const {data} = props.route.params;
 
   const openMenu = () => {

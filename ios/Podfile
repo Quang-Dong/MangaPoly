@@ -10,6 +10,8 @@ target 'MangaPoly' do
 
   pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
 
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+
   target 'MangaPolyTests' do
     inherit! :complete
     # Pods for testing
