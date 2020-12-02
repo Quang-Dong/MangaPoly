@@ -6,36 +6,32 @@ import {
   View,
   Text,
   Image,
-  Dimensions,
 } from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 
-import {wp, hp} from '../../lib/responsive';
+import {wp, hp, width} from '../../lib/responsive';
 import firebaseApp from '../../core/firebase/firebaseConfig';
 
-const {width} = Dimensions.get('window');
-
-import DATA from '../../core/data/dataManga';
-
-const History = () => {
-  const [lastRead, setLastRead] = useState('');
-  const [latestChapter, setLatestChapter] = useState('');
+const History = (props) => {
   const [data, setData] = useState('');
 
   const historyRef = firebaseApp.database().ref('History');
   const user = firebaseApp.auth().currentUser;
 
   useEffect(() => {
-    //get user name from firebase
+    getHistory();
+  }, []);
+
+  const getHistory = () => {
     historyRef.child(user.uid).once('value', (snapshot) => {
       var historyData = [];
-      snapshot.forEach((child) => {
+      snapshot.forEach(async (child) => {
         let data1 = child.val();
         historyData.push(data1);
       });
       setData(historyData);
     });
-  }, []);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -45,6 +41,9 @@ const History = () => {
           return (
             // START - Item
             <Pressable
+              onPress={() => {
+                props.navigation.navigate('DetailItem', item.id);
+              }}
               android_ripple={{color: 'grey', radius: wp(200)}}
               style={styles.items}>
               {/* START - Poster */}

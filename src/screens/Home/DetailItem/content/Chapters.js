@@ -49,6 +49,7 @@ const Chapters = (props) => {
                 .child(user.uid)
                 .child(id)
                 .set({
+                  id: id,
                   title: props.title,
                   lastRead: item.id,
                   latestChapter: latestChapter + '',
