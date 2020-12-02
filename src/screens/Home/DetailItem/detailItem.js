@@ -94,7 +94,13 @@ const DetailItem = (props) => {
     ) : null;
   const chaptersJSX =
     isPressed === 'Chapter' ? (
-      <Chapters id={id} navigation={props.navigation} />
+      <Chapters
+        id={id}
+        navigation={props.navigation}
+        state={state}
+        title={title}
+        poster={pic}
+      />
     ) : null;
   const commentsJSX =
     isPressed === 'Comment' ? (

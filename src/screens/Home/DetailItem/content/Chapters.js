@@ -5,25 +5,34 @@ import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import {wp, hp} from '../../../../lib/responsive';
 import firebaseApp from '../../../../core/firebase/firebaseConfig';
 
-const db = firebaseApp.database().ref('Chapters');
+const chapterRef = firebaseApp.database().ref('Chapters');
+const historyRef = firebaseApp.database().ref('History');
+
 const Chapters = (props) => {
   const [data, setData] = useState('');
+  const [latestChapter, setLatestChapter] = useState(0);
   const {id, navigation} = props; //'id' này là id manga
 
+  const user = firebaseApp.auth().currentUser;
+
   const getChapters = () => {
-    db.child(id).once('value', (snapshot) => {
-      var li = [];
+    chapterRef.child(id).once('value', (snapshot) => {
+      var chapterData = [];
+      var lastChapter = [];
       snapshot.forEach((child) => {
+        let data2 = child.key;
         let data1 = child.child('info').val();
-        li.push(data1);
+        chapterData.push(data1);
+        lastChapter.push(data2);
       });
-      setData(li);
+      setData(chapterData);
+      setLatestChapter(lastChapter.length);
     });
   };
 
   useEffect(() => {
     getChapters();
-  }, [db]);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -36,6 +45,16 @@ const Chapters = (props) => {
                 idChapter: item.id,
                 idManga: id,
               });
+              historyRef
+                .child(user.uid)
+                .child(id)
+                .set({
+                  title: props.title,
+                  lastRead: item.id,
+                  latestChapter: latestChapter + '',
+                  state: props.state,
+                  poster: props.poster,
+                });
             }}
             android_ripple={{color: 'white', radius: 200}}
             style={{

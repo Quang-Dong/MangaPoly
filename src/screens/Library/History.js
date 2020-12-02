@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -11,64 +11,87 @@ import {
 import {FlatList} from 'react-native-gesture-handler';
 
 import {wp, hp} from '../../lib/responsive';
-
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import firebaseApp from '../../core/firebase/firebaseConfig';
 
 const {width} = Dimensions.get('window');
 
 import DATA from '../../core/data/dataManga';
 
-const History = () => (
-  <SafeAreaView style={styles.container}>
-    <FlatList
-      data={DATA}
-      renderItem={({item}) => {
-        return (
-          // START - Item
-          <Pressable
-            android_ripple={{color: 'grey', radius: wp(200)}}
-            style={styles.items}>
-            {/* START - Poster */}
-            <Image
-              source={item.pic}
-              resizeMode="cover"
-              style={{
-                height: hp(170),
-                width: wp(120),
-                borderRadius: wp(10),
-              }}
-            />
-            {/* END - Poster */}
-            {/* START - Right content */}
-            <View style={styles.rightContent}>
-              {/* START - Title */}
-              <Text style={styles.titleTxt}>{item.title}</Text>
-              {/* END - Title */}
+const History = () => {
+  const [lastRead, setLastRead] = useState('');
+  const [latestChapter, setLatestChapter] = useState('');
+  const [data, setData] = useState('');
 
-              {/* START - Last read */}
-              <Text style={styles.iconTxt}>Lần đọc trước: Chapter 197</Text>
-              {/* END - Last read */}
-              {/* START - Newest chapter */}
-              <Text style={styles.iconTxt}>Tập mới nhất: Chapter 369</Text>
-              {/* END - Newest chapter */}
-              {/* START - State */}
-              <View style={styles.stateView}>
-                <Text style={styles.stateTxt}>
-                  Cập nhật mới nhất Thứ hai, Thứ năm
-                </Text>
+  const historyRef = firebaseApp.database().ref('History');
+  const user = firebaseApp.auth().currentUser;
+
+  useEffect(() => {
+    //get user name from firebase
+    historyRef.child(user.uid).once('value', (snapshot) => {
+      var historyData = [];
+      snapshot.forEach((child) => {
+        let data1 = child.val();
+        historyData.push(data1);
+      });
+      setData(historyData);
+    });
+  }, []);
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={data}
+        renderItem={({item}) => {
+          return (
+            // START - Item
+            <Pressable
+              android_ripple={{color: 'grey', radius: wp(200)}}
+              style={styles.items}>
+              {/* START - Poster */}
+              <Image
+                source={{uri: item.poster}}
+                resizeMode="cover"
+                style={{
+                  height: hp(170),
+                  width: wp(120),
+                  borderRadius: wp(10),
+                }}
+              />
+              {/* END - Poster */}
+              {/* START - Right content */}
+              <View style={styles.rightContent}>
+                {/* START - Title */}
+                <Text style={styles.titleTxt}>{item.title}</Text>
+                {/* END - Title */}
+
+                {/* START - Last read */}
+                <Text
+                  style={
+                    styles.iconTxt
+                  }>{`Lần đọc trước: Chapter ${item.lastRead}`}</Text>
+                {/* END - Last read */}
+                {/* START - Newest chapter */}
+                <Text
+                  style={
+                    styles.iconTxt
+                  }>{`Tập mới nhất: Chapter ${item.latestChapter}`}</Text>
+                {/* END - Newest chapter */}
+                {/* START - State */}
+                <View style={styles.stateView}>
+                  <Text style={styles.stateTxt}>{item.state}</Text>
+                </View>
+                {/* END - State */}
               </View>
-              {/* END - State */}
-            </View>
-            {/* END - Right content */}
-          </Pressable>
-          // END - Item
-        );
-      }}
-      keyExtractor={(item) => item.id}
-    />
-  </SafeAreaView>
-);
+              {/* END - Right content */}
+            </Pressable>
+            // END - Item
+          );
+        }}
+        keyExtractor={(item) => item.id}
+      />
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
