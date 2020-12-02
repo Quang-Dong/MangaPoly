@@ -76,7 +76,7 @@ const SignUp = ({navigation}) => {
             displayName: fullName.trim(),
           });
         } else {
-          setErr('Có lỗi gì đó xảy ra, vui lòng khởi động lại ứng dụng!');
+          setErr('');
         }
       });
     }
@@ -196,10 +196,12 @@ const styles = StyleSheet.create({
   txtInput: {
     width: 230,
     fontFamily: 'SF-Pro-Rounded-Medium',
+    fontWeight: 'normal',
   },
   txtInputPass: {
     width: 200,
     fontFamily: 'SF-Pro-Rounded-Medium',
+    fontWeight: 'normal',
   },
   txtError: {
     color: 'red',

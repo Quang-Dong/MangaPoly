@@ -73,8 +73,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   headerTitle: {
+    color: 'black',
     fontSize: wp(23),
-    fontFamily: 'SF-Pro-Rounded-UltraLight',
+    fontFamily: 'SF-Pro-Rounded-Medium',
     letterSpacing: 5,
   },
   contentLayout: {

@@ -9,6 +9,7 @@ import {
   Pressable,
   View,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 
 //screens
@@ -26,6 +27,7 @@ import Library from './screens/Library/Library';
 //libs
 import {wp, width} from './lib/responsive';
 import firebaseApp from './core/firebase/firebaseConfig';
+import ic_avaUser from './Assets/icon/ic_user.png';
 //redux
 import store from './redux/store/store';
 
@@ -44,17 +46,19 @@ const Stack = createStackNavigator();
 // START - Drawer layout
 const DrawerLayout = (props) => {
   const [fullName, setFullName] = useState('Họ và tên');
+  const [ava, setAva] = useState();
   const db = firebaseApp.database().ref('Users');
 
   useEffect(() => {
     //Nên dùng 'return' để trả về kết quả cuối để tránh rò rỉ ram.
     return firebaseApp.auth().onAuthStateChanged((user) => {
       if (user) {
-        db.child(user.uid)
-          .child('fullName')
-          .on('value', (snapshot) => {
-            setFullName(snapshot.val() ? snapshot.val() : 'Họ và tên');
-          });
+        db.child(user.uid).on('value', (snapshot) => {
+          const userName = snapshot.child('fullName').val();
+          const userAva = snapshot.child('ava').val();
+          setFullName(userName ? userName : 'Họ và tên');
+          setAva(userAva);
+        });
       }
     });
   }, []);
@@ -69,7 +73,10 @@ const DrawerLayout = (props) => {
           navigation.navigate('Accounts', {navigation});
         }}>
         <Shadow style={styles.accountLayout}>
-          <Icon name="user-circle" size={100} color="#95a5a6" />
+          <Image
+            style={{width: 120, height: 120, borderRadius: 60}}
+            source={ava ? {uri: ava} : ic_avaUser}
+          />
 
           <Text style={styles.accountName}>{fullName}</Text>
         </Shadow>

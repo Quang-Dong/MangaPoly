@@ -253,6 +253,7 @@ const styles = StyleSheet.create({
     fontFamily: 'SF-Pro-Rounded-Medium',
     fontSize: wp(18),
     color: '#2f3640',
+    height: hp(30),
   },
   titleAuthor: {fontFamily: 'SF-Pro-Rounded-Thin'},
   contentContainer: {marginTop: wp(20), flex: 1},

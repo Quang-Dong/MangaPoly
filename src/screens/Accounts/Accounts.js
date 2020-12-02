@@ -57,6 +57,20 @@ const Accounts = (props) => {
     });
   }, []);
 
+  const launchCamera = () => {
+    ImagePicker.launchCamera(
+      {mediaType: 'photo', storageOptions: {skipBackup: true, path: 'images'}},
+      (res) => {
+        if (res.error) {
+          console.log('ImagePicker Error: ' + res.error);
+        } else {
+          ToastAndroid.show('Đang đổi ảnh đại diện . . .', ToastAndroid.SHORT);
+          uploadImageToFirebase(res.uri, user.uid);
+        }
+      },
+    );
+  };
+
   const chooseImage = () => {
     ImagePicker.launchImageLibrary(
       {mediaType: 'photo', storageOptions: {skipBackup: true, path: 'images'}},
@@ -82,7 +96,7 @@ const Accounts = (props) => {
       xhr.send(null);
     });
 
-    const ref = avaRef.child(userUID);
+    const ref = avaRef.child(userUID).child('ava');
 
     let snapshot = await ref.put(blob);
 
@@ -118,7 +132,10 @@ const Accounts = (props) => {
                 <TouchableOpacity onPress={() => setClicked(false)}>
                   <Neomorph style={styles.itemLayout}>
                     <MenuOption
-                      onSelect={() => setClicked(false)}
+                      onSelect={() => {
+                        setClicked(false);
+                        launchCamera();
+                      }}
                       text="Chụp ảnh"
                     />
                   </Neomorph>

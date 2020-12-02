@@ -166,14 +166,17 @@ const styles = StyleSheet.create({
   txtError: {
     color: 'red',
     fontFamily: 'SF-Pro-Rounded-Medium',
+    fontWeight: 'normal',
   },
   txtInputEmail: {
     width: 230,
     fontFamily: 'SF-Pro-Rounded-Medium',
+    fontWeight: 'normal',
   },
   txtInputPassword: {
     width: 200,
     fontFamily: 'SF-Pro-Rounded-Medium',
+    fontWeight: 'normal',
   },
   btn: {
     shadowRadius: 7,
@@ -187,6 +190,7 @@ const styles = StyleSheet.create({
   },
   txtForgotPass: {
     fontFamily: 'SF-Pro-Rounded-Thin',
+    fontWeight: 'normal',
   },
   loading: {
     position: 'absolute',

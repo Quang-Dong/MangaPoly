@@ -43,9 +43,7 @@ const Comments = (props) => {
             android_ripple={{color: 'white', radius: wp(500)}}
             style={styles.cmtLayout}>
             <Image
-              source={
-                item.info.avatar === '' ? ic_user : {uri: item.info.avatar}
-              }
+              source={item.info.avatar ? {uri: item.info.avatar} : ic_user}
               resizeMode="cover"
               style={styles.avaLayout}
             />
