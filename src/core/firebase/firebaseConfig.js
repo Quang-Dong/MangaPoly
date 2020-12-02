@@ -1,14 +1,15 @@
 import firebase from 'firebase';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBJY8XkOkJCHibddPAQA6U0Au3arMGwzIg',
-  authDomain: 'testing-78f20.firebaseapp.com',
-  databaseURL: 'https://testing-78f20.firebaseio.com',
-  projectId: 'testing-78f20',
-  storageBucket: 'testing-78f20.appspot.com',
-  messagingSenderId: '134267553868',
-  appId: '1:134267553868:web:83aa83f215e70220cc8ce9',
-  measurementId: 'G-WQKBP9V65Q',
+  apiKey: "API_KEY",
+  authDomain: "PROJECT_ID.firebaseapp.com",
+  databaseURL: "https://PROJECT_ID.firebaseio.com",
+  projectId: "PROJECT_ID",
+  storageBucket: "PROJECT_ID.appspot.com",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID",
+  measurementId: "G-MEASUREMENT_ID",
+
 };
 // Initialize Firebase
 
