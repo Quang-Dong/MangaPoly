@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -11,7 +11,6 @@ import {FlatList} from 'react-native-gesture-handler';
 
 import {wp, hp, width} from '../../lib/responsive';
 import firebaseApp from '../../core/firebase/firebaseConfig';
-import {Children} from 'react/cjs/react.production.min';
 
 const History = (props) => {
   const [data, setData] = useState('');
@@ -21,19 +20,18 @@ const History = (props) => {
 
   useEffect(() => {
     getHistory();
-  }, []);
+  }, [getHistory]);
 
-  const getHistory = () => {
+  const getHistory = useCallback(() => {
     historyRef.child(user.uid).once('value', (snapshot) => {
       var historyData = [];
       snapshot.forEach((child) => {
         let data1 = child.val();
-        console.log(child);
         historyData.push(data1);
       });
       setData(historyData);
     });
-  };
+  }, [historyRef, user.uid]);
 
   return (
     <SafeAreaView style={styles.container}>

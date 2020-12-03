@@ -11,8 +11,6 @@ import {FlatList} from 'react-native-gesture-handler';
 
 //components
 import {wp, hp} from '../../../../../lib/responsive';
-// import {_title, _content} from '../ItemInner/ItemInner';
-import DATA from '../../../../../core/data/dataManga';
 import firebaseApp from '../../../../../core/firebase/firebaseConfig';
 import arrow_right from '../../../../../Assets/icon/arrow_right.png';
 
@@ -40,7 +38,7 @@ const Item = (props) => {
     });
 
     // console.log(JSON.stringify(data));
-  }, []);
+  }, [a, b]);
   return (
     <SafeAreaView style={styles.container}>
       {/* START - tiêu đề */}

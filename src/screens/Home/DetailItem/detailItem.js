@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -26,6 +26,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const DetailItem = (props) => {
   const [isPressed, setIsPressed] = useState(null);
   const [like, setLike] = useState(false);
+  const [bookmark, setBookmark] = useState(false);
   const [countLikes, setCountLikes] = useState(mangaLikes);
   const [uID, setUID] = useState();
 
@@ -38,35 +39,40 @@ const DetailItem = (props) => {
   const [mangaReads, setMangaReads] = useState('');
   const [mangaGenre, setMangaGenre] = useState('');
 
-  const likeRef = firebaseApp.database().ref('Liked');
   const mangaRef = firebaseApp.database().ref('Mangas');
-  const user = firebaseApp.auth().currentUser;
+  const likeStateRef = firebaseApp.database().ref('LikeState');
+  const bookmarkStateRef = firebaseApp.database().ref('BookmarkState');
+  const bookmarkRef = firebaseApp.database().ref('Bookmark');
 
-  var isLiked = false;
+  const user = firebaseApp.auth().currentUser;
 
   useEffect(() => {
     getLikeState();
+    getBookmarkState();
   });
 
   //tại sao lại set ở đây, mà ko set thẳng trên useState? là vì set ở trên useState sẽ bị lỗi UI
   useEffect(() => {
     setIsPressed('Description');
     getMangas();
-  }, []);
+  }, [getMangas]);
 
   const {mangaID} = props.route.params;
 
   const getLikeState = () => {
     if (user) {
       setUID(user.uid);
-      likeRef
+
+      // Lấy trạng thái đã like hay chưa để đưa lên UI
+      likeStateRef
         .child(mangaID)
         .child(user.uid)
         .on('value', (snapshot) => {
-          isLiked = snapshot.val();
+          const isLiked = snapshot.val();
           setLike(isLiked);
         });
 
+      //Ở thông tin truyện, lấy lượt like hiện có của truyện
       mangaRef
         .child(mangaID)
         .child('totalLikes')
@@ -77,7 +83,33 @@ const DetailItem = (props) => {
     }
   };
 
-  const getMangas = () => {
+  const getBookmarkState = () => {
+    bookmarkStateRef
+      .child(mangaID)
+      .child(user.uid)
+      .on('value', (snapshot) => {
+        const isBookmark = snapshot.val();
+        setBookmark(isBookmark);
+      });
+
+    setTimeout(() => {
+      bookmark
+        ? bookmarkRef.child(user.uid).child(mangaID).set({
+            name: mangaName,
+            poster: mangaPoster,
+            author: mangaAuthor,
+            description: mangaDes,
+            state: mangaState,
+            genres: mangaGenre,
+            totalLikes: mangaLikes,
+            totalReads: mangaReads,
+            id: mangaID,
+          })
+        : bookmarkRef.child(user.uid).child(mangaID).remove();
+    }, 3000);
+  };
+
+  const getMangas = useCallback(() => {
     console.log(mangaID);
     mangaRef.child(mangaID).once('value', (snapshot) => {
       setMangaName(snapshot.child('name').val());
@@ -89,15 +121,21 @@ const DetailItem = (props) => {
       setMangaLikes(snapshot.child('totalLikes').val());
       setMangaReads(snapshot.child('totalReads').val());
     });
-  };
+  }, [mangaID, mangaRef]);
 
-  const liked = () => {
-    likeRef.child(mangaID).child(uID).set(!isLiked);
+  const pressLike = () => {
+    likeStateRef.child(mangaID).child(uID).set(!like);
+
+    //Nhờ vào 'lượt like hiện có' đã lấy ở trên để tăng thêm 1 nếu true, false thì ngược lại
     mangaRef
       .child(mangaID)
       .update(
         like ? {totalLikes: countLikes - 1} : {totalLikes: countLikes + 1},
       );
+  };
+
+  const pressBookmark = () => {
+    bookmarkStateRef.child(mangaID).child(uID).set(!bookmark);
   };
 
   //tại sao phải chạy cái này mà ko set cứng ở trên useState?
@@ -184,15 +222,23 @@ const DetailItem = (props) => {
             </View>
             <TouchableOpacity
               onPress={() => {
-                liked();
+                pressLike();
               }}
               style={styles.titleViewLeftRightItem}>
               <FontAwesome name={!like ? 'heart-o' : 'heart'} size={25} />
               <Text>{countLikes}</Text>
             </TouchableOpacity>
-            <View style={styles.titleViewLeftRightItem}>
-              <FontAwesome name="bookmark-o" size={25} />
-            </View>
+            <TouchableOpacity
+              onPress={() => {
+                pressBookmark();
+              }}>
+              <View style={styles.titleViewLeftRightItem}>
+                <FontAwesome
+                  name={!bookmark ? 'bookmark-o' : 'bookmark'}
+                  size={25}
+                />
+              </View>
+            </TouchableOpacity>
           </View>
           {/*END - viewRight*/}
         </View>
