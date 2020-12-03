@@ -11,6 +11,7 @@ import {FlatList} from 'react-native-gesture-handler';
 
 import {wp, hp, width} from '../../lib/responsive';
 import firebaseApp from '../../core/firebase/firebaseConfig';
+import {Children} from 'react/cjs/react.production.min';
 
 const History = (props) => {
   const [data, setData] = useState('');
@@ -25,8 +26,9 @@ const History = (props) => {
   const getHistory = () => {
     historyRef.child(user.uid).once('value', (snapshot) => {
       var historyData = [];
-      snapshot.forEach(async (child) => {
+      snapshot.forEach((child) => {
         let data1 = child.val();
+        console.log(child);
         historyData.push(data1);
       });
       setData(historyData);
@@ -37,12 +39,13 @@ const History = (props) => {
     <SafeAreaView style={styles.container}>
       <FlatList
         data={data}
+        keyExtractor={(item) => item.id}
         renderItem={({item}) => {
           return (
             // START - Item
             <Pressable
               onPress={() => {
-                props.navigation.navigate('DetailItem', item.id);
+                props.navigation.navigate('DetailItem', {mangaID: item.id});
               }}
               android_ripple={{color: 'grey', radius: wp(200)}}
               style={styles.items}>
@@ -86,7 +89,6 @@ const History = (props) => {
             // END - Item
           );
         }}
-        keyExtractor={(item) => item.id}
       />
     </SafeAreaView>
   );
