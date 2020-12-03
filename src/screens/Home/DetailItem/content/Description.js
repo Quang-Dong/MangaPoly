@@ -5,14 +5,14 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {wp} from '../../../../lib/responsive';
 
 const Description = (props) => {
-  const {state, des, genre} = props;
+  const {state, des, genres} = props;
 
   return (
     <View style={styles.container}>
       {/*START - genre*/}
       <View style={styles.contentGenreContainer}>
-        {genre
-          ? genre.map((e) => (
+        {genres
+          ? genres.split(',').map((e) => (
               <Text key={e} style={styles.contentGenreItem}>
                 {e}
               </Text>

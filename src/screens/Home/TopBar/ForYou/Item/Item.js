@@ -65,15 +65,7 @@ const Item = (props) => {
             style={styles.contentContainer}
             onPress={() => {
               props.navigation.navigate('DetailItem', {
-                id: item.id,
-                pic: item.poster,
-                title: item.name,
-                author: item.author,
-                state: item.state,
-                des: item.description,
-                totalLikes: item.totalLikes,
-                totalReads: item.totalReads,
-                genre: item.genres.split(','),
+                mangaID: item.id,
               });
               console.log(item.id);
             }}>

@@ -26,8 +26,17 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const DetailItem = (props) => {
   const [isPressed, setIsPressed] = useState(null);
   const [like, setLike] = useState(false);
-  const [countLikes, setCountLikes] = useState(totalLikes);
+  const [countLikes, setCountLikes] = useState(mangaLikes);
   const [uID, setUID] = useState();
+
+  const [mangaPoster, setMangaPoster] = useState(null);
+  const [mangaName, setMangaName] = useState('');
+  const [mangaAuthor, setMangaAuthor] = useState('');
+  const [mangaState, setMangaState] = useState('');
+  const [mangaDes, setMangaDes] = useState('');
+  const [mangaLikes, setMangaLikes] = useState('');
+  const [mangaReads, setMangaReads] = useState('');
+  const [mangaGenre, setMangaGenre] = useState('');
 
   const likeRef = firebaseApp.database().ref('Liked');
   const mangaRef = firebaseApp.database().ref('Mangas');
@@ -42,25 +51,16 @@ const DetailItem = (props) => {
   //tại sao lại set ở đây, mà ko set thẳng trên useState? là vì set ở trên useState sẽ bị lỗi UI
   useEffect(() => {
     setIsPressed('Description');
+    getMangas();
   }, []);
 
-  const {
-    id,
-    pic,
-    title,
-    author,
-    state,
-    des,
-    totalLikes,
-    totalReads,
-    genre,
-  } = props.route.params;
+  const {mangaID} = props.route.params;
 
   const getLikeState = () => {
     if (user) {
       setUID(user.uid);
       likeRef
-        .child(id)
+        .child(mangaID)
         .child(user.uid)
         .on('value', (snapshot) => {
           isLiked = snapshot.val();
@@ -68,7 +68,7 @@ const DetailItem = (props) => {
         });
 
       mangaRef
-        .child(id)
+        .child(mangaID)
         .child('totalLikes')
         .on('value', (snapshot) => {
           const Likes = snapshot.val();
@@ -77,10 +77,24 @@ const DetailItem = (props) => {
     }
   };
 
+  const getMangas = () => {
+    console.log(mangaID);
+    mangaRef.child(mangaID).once('value', (snapshot) => {
+      setMangaName(snapshot.child('name').val());
+      setMangaPoster(snapshot.child('poster').val());
+      setMangaAuthor(snapshot.child('author').val());
+      setMangaDes(snapshot.child('description').val());
+      setMangaState(snapshot.child('state').val());
+      setMangaGenre(snapshot.child('genres').val());
+      setMangaLikes(snapshot.child('totalLikes').val());
+      setMangaReads(snapshot.child('totalReads').val());
+    });
+  };
+
   const liked = () => {
-    likeRef.child(id).child(uID).set(!isLiked);
+    likeRef.child(mangaID).child(uID).set(!isLiked);
     mangaRef
-      .child(id)
+      .child(mangaID)
       .update(
         like ? {totalLikes: countLikes - 1} : {totalLikes: countLikes + 1},
       );
@@ -90,21 +104,21 @@ const DetailItem = (props) => {
   //Bời vì set cứng làm giao diện của button Description bị lỗi
   const descriptionJSX =
     isPressed === 'Description' ? (
-      <Description state={state} des={des} genre={genre} />
+      <Description state={mangaState} des={mangaDes} genres={mangaGenre} />
     ) : null;
   const chaptersJSX =
     isPressed === 'Chapter' ? (
       <Chapters
-        id={id}
+        id={mangaID}
         navigation={props.navigation}
-        state={state}
-        title={title}
-        poster={pic}
+        state={mangaState}
+        title={mangaName}
+        poster={mangaPoster}
       />
     ) : null;
   const commentsJSX =
     isPressed === 'Comment' ? (
-      <Comments id={id} navigation={props.navigation} />
+      <Comments id={mangaID} navigation={props.navigation} />
     ) : null;
   return (
     <SafeAreaView style={styles.container}>
@@ -157,7 +171,7 @@ const DetailItem = (props) => {
           {/*END - viewLeft*/}
           <Shadow useArt style={styles.titleShadow}>
             <Image
-              source={{uri: pic}}
+              source={{uri: mangaPoster || mangaPoster}}
               resizeMode="contain"
               style={styles.titleImg}
             />
@@ -166,7 +180,7 @@ const DetailItem = (props) => {
           <View style={styles.titleViewLeftRight}>
             <View style={styles.titleViewLeftRightItem}>
               <FontAwesome5 name="book-reader" size={25} />
-              <Text>{totalReads}</Text>
+              <Text>{mangaReads}</Text>
             </View>
             <TouchableOpacity
               onPress={() => {
@@ -185,8 +199,8 @@ const DetailItem = (props) => {
         {/* END - Img*/}
         {/* START - name */}
         <View style={styles.titleViewMangaName}>
-          <Text style={styles.titleMangaName}>{title}</Text>
-          <Text style={styles.titleAuthor}>{author}</Text>
+          <Text style={styles.titleMangaName}>{mangaName}</Text>
+          <Text style={styles.titleAuthor}>{mangaAuthor}</Text>
         </View>
 
         {/* END - name */}
