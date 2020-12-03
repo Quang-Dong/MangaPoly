@@ -1,19 +1,54 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Image, ImageBackground} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 
 import {wp, hp, height, width} from '../../lib/responsive';
 import firebaseApp from '../../core/firebase/firebaseConfig';
 
-const db = firebaseApp.database().ref('Chapters');
+const chapterRef = firebaseApp.database().ref('Chapters');
 const ListImages = (props) => {
   const [data, setData] = useState('');
-  const {idManga, idChapter} = props.route.params;
+
+  const {mangaID, chapterID} = props.route.params;
   // const {width, height} = Image.resolveAssetSource();
 
+  const mangaRef = firebaseApp.database().ref('Mangas');
+
+  useEffect(() => {
+    getTotalReads();
+  });
+
+  var countReads = 0;
+
+  useEffect(() => {
+    getImages();
+
+    const increaseRead = setInterval(() => {
+      mangaRef
+        .child(mangaID)
+        .update({totalReads: (countReads = countReads + 1)});
+      // console.log((countReads = countReads + 1));
+    }, 30000);
+
+    //'Hàm return' này giống như componentWillUnmount
+    return () => {
+      clearInterval(increaseRead);
+    };
+  }, []);
+
+  const getTotalReads = () => {
+    mangaRef
+      .child(mangaID)
+      .child('totalReads')
+      .on('value', (snapshot) => {
+        countReads = snapshot.val();
+      });
+  };
+
   const getImages = () => {
-    db.child(idManga)
-      .child(idChapter)
+    chapterRef
+      .child(mangaID)
+      .child(chapterID)
       .child('images')
       .once('value', (snapshot) => {
         var li = [];
@@ -26,10 +61,6 @@ const ListImages = (props) => {
         setData(li);
       });
   };
-
-  useEffect(() => {
-    getImages();
-  }, []);
 
   return (
     <View style={styles.container}>

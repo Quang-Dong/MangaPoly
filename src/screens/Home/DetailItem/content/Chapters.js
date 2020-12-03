@@ -42,8 +42,8 @@ const Chapters = (props) => {
           <Pressable
             onPress={() => {
               navigation.navigate('ListImages', {
-                idChapter: item.id,
-                idManga: id,
+                chapterID: item.id,
+                mangaID: id,
               });
               historyRef
                 .child(user.uid)
